@@ -2,9 +2,18 @@
     <head>
         <meta charset="utf-8"/>
         <script src="util.js"></script>
-    </head>
-    <body>
-        <canvas id="canvas"></canvas>
         <script src="one.js"></script>
+        <script src="two.js"></script>
+    </head>
+    <body style="display: flex; align-items: center; justify-content: center;">
+        <canvas id="canvas"></canvas>
+        <script>
+            const params = (new URL(document.location)).searchParams
+            const n = params.get("n") || "one"
+            const seed = params.get("seed")
+            const rng = seed ? new RNG(parseInt(seed)) : new RNG() //RNG(0xdef)
+            console.log("seed:", rng.seed)
+            window[n](rng)
+        </script>
     </body>
 </html>
