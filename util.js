@@ -98,6 +98,15 @@ function triangle(ctx, p1, p2, p3, fill) {
     }
 }
 
+function euclideanDistance(v1, v2) {
+    if (v1.length !== v2.length) {
+        throw "Vector lengths do not match"
+    }
+    return Math.sqrt(range(v1.length)
+        .map((i) => (v1[i] - v2[i]) ** 2)
+        .reduce((a, b) => a + b))
+}
+
 function setPixel(ctx, [x, y], color) {
     if (Array.isArray(color)) {
         ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
