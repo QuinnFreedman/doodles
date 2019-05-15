@@ -13,7 +13,7 @@ function three(rng) {
 
     const DELTA_1 = [150, 20]
     const DELTA_2 = [50, 6]
-    for (let { } of range(1)) {
+    for (let { } of range(60)) {
         const point1 = [rng.nextRange(0, width), rng.nextRange(0, height)]
         
         const theta2 = rng.nextRange(2 * Math.PI)
@@ -59,34 +59,58 @@ function paintStroke(ctx, strokeStart, strokeEnd, color) {
     if (typeof color === "string") {
         color = rgbToHex(color)
     }
+
+    const strokeStep = 5
+    const strokeWidthStep = 5
+    const strokeWidth = 10
+    
+    let bristleColors = range(strokeWidth * 2 + 1)
+        .map(() => [
+            rng.normal(color[0], .05),
+            rng.normal(color[1], .05),
+            rng.normal(color[2], .05)
+        ])
+    let bristleOutlineColors = range(strokeWidth * 2 + 1)
+        .map(() => [
+            rng.normal(color[0], .05),
+            rng.normal(color[1], .05),
+            rng.normal(color[2], .05)
+        ])
+
+
     const deltaX = strokeEnd[0] - strokeStart[0]
     const deltaY = strokeEnd[1] - strokeStart[1] 
     const strokeLength = euclideanDistance(strokeStart, strokeEnd)
     const theta = Math.atan2(deltaY, deltaX)
 
-    const strokeStep = 10
-    const strokeWidthStep = 5
-    const strokeWidth = 10
     ctx.fillStyle = "#fff"
     const color255 = color.map((x) => x * 255)
     for (let i of range(Math.round(strokeLength / strokeStep) + 1)) {
         let distance = i * strokeStep
         let tangent = theta - Math.PI / 2
         let centerPoint = moveInDirection(strokeStart, theta, distance)
-        // centerPoint = moveInDirection(centerPoint, tangent, rng.normal(0, 5))
+        centerPoint = moveInDirection(centerPoint, tangent, rng.normal(0, 1))
         let p1 = moveInDirection(centerPoint, tangent, strokeWidth * strokeWidthStep)
 
         for (let j of range(strokeWidth * 2 + 1)) {
             let latteralDistance = j * strokeWidthStep
             let p = moveInDirection(p1, tangent - Math.PI, latteralDistance)
-            let color1 = ctx.getImageData(...p, 1, 1).data.slice(0, 3)
-            let collorDistance = .99 - euclideanDistance(color255, color1) / 450
-            console.log(color255, color1, collorDistance)
-            ctx.fillStyle = rgbToHex([
-                collorDistance, collorDistance, collorDistance])
+            let colorAtPoint = ctx.getImageData(...p, 1, 1).data.slice(0, 3)
+            let collorDistance = euclideanDistance(color255, colorAtPoint) / 450
+            let fillColor = `rgba(${bristleColors[j].map((x) => clamp(0, 255, x * 255)).join(",")},${.5 - collorDistance})`
+            for (let c of range(3)) {
+                bristleColors[j][c] += rng.normal(0, .01)
+            }
+
+
+            // let outlineColor = `rgba(${bristleOutlineColors[j].map((x) => clamp(0, 255, x * 255)).join(",")},${.5 - collorDistance})`
             ctx.beginPath()
-            ctx.arc(...p, 2, 0, Math.PI * 2)
+            // ctx.arc(...p, 2, 0, Math.PI * 2)
+            ctx.ellipse(...p, 6, 2, theta, 0, Math.PI * 2)
+            ctx.fillStyle = fillColor
             ctx.fill()
+            // ctx.strokeSyle = outlineColor
+            // ctx.stroke()
         }
         ctx.beginPath()
         ctx.arc(...centerPoint, 2, 0, Math.PI * 2)
