@@ -43,13 +43,6 @@ function three(rng) {
     }
 }
 
-function moveInDirection(from, theta, distance) {
-    return [
-        from[0] + Math.cos(theta) * distance,
-        from[1] + Math.sin(theta) * distance,
-    ]
-}
-
 /**
  * @param {CanvasRenderingContext2D} ctx
  * @param {Array} strokeStart

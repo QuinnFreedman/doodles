@@ -163,3 +163,22 @@ function rgbToHex(rgbOrHex) {
 }
 
 
+function moveInDirection(from, theta, distance) {
+    return [
+        from[0] + Math.cos(theta) * distance,
+        from[1] + Math.sin(theta) * distance,
+    ]
+}
+
+function lerp(a, b, x) {
+    return a + (b - a) * x
+}
+
+function moveToward(from, to, distance) {
+    let totalDistance = euclideanDistance(from, to)
+    let ratio = distance / totalDistance
+    return [
+        lerp(from[0], to[0], ratio),
+        lerp(from[1], to[1], ratio)
+    ]
+}
