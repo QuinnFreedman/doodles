@@ -22,6 +22,10 @@ RNG.prototype.nextFloat = function () {
 RNG.prototype.nextBool = function () {
     return this.nextFloat() < .5
 }
+
+RNG.prototype.nextSign = function () {
+    return this.nextBool() ? 1 : -1
+}
 /**
  * returns in range [start, end): including start, excluding end
  * @param {number} start

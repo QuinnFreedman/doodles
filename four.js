@@ -1,5 +1,5 @@
 function four(rng) {
-    NUM_POINTS = 40
+    const NUM_POINTS = 40
 
     const canvas = document.querySelector("canvas")
     const ctx = canvas.getContext('2d')
