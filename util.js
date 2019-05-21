@@ -252,11 +252,17 @@ function roundPolly(ctx, points, radius) {
 }
 
 function startAnimating(callback, fps) {
+
     let fpsInterval = 1000 / fps
     let then = Date.now()
+    let uid = "animation_" + then
+    window[uid] = true
 
     function animate() {
+        if (!window[uid]) { return }
+
         requestAnimationFrame(animate)
+
         now = Date.now()
         elapsed = now - then
 
@@ -267,4 +273,9 @@ function startAnimating(callback, fps) {
     }
 
     animate()
+    return uid
+}
+
+function stopAnimation(uid) {
+    delete window[uid]
 }

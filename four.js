@@ -1,8 +1,9 @@
 function four(rng) {
     const NUM_POINTS = 30
-    const FREQ = 8
-    const AMPLITUDE = 6
+    const FREQ = 8 * 6
+    const AMPLITUDE = 70
     const CYCLE_SPREAD = (Math.PI * 2) / 3
+    const MARGIN = 50
 
     const canvas = document.querySelector("canvas")
     const ctx = canvas.getContext("2d")
@@ -21,13 +22,13 @@ function four(rng) {
     voronoi = new Voronoi()
 
     let initialSites = range(NUM_POINTS).map(() => ({
-        x: Math.round(rng.nextRange(width)),
-        y: Math.round(rng.nextRange(height))
+        x: Math.round(rng.nextRange(-MARGIN, width + MARGIN)),
+        y: Math.round(rng.nextRange(-MARGIN, height + MARGIN))
     }))
 
     let sites = []
     for (let site of initialSites) {
-        sites.push(site)
+        sites.push({...site})
     }
 
     let offsets = range(sites.length).map(() =>
@@ -37,7 +38,7 @@ function four(rng) {
     let t = 0
     let diagram = null
 
-    setInterval(draw, 100)
+    const animId = startAnimating(draw, 60)
     // draw()
     function draw() {
         canvas.width = width
@@ -75,6 +76,8 @@ function four(rng) {
             ctx.fill()
         }
     }
+
+    return () => delete window[animId]
 
     /**
      * @param {Array} edges

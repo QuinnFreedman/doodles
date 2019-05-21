@@ -31,7 +31,7 @@ function six(rng) {
     let velocity = []
 
     let firstTime = true
-    startAnimating(draw, TARGET_FPS)
+    let animId = startAnimating(draw, TARGET_FPS)
     // draw()
     function draw() {
         canvas.width = width
@@ -70,6 +70,8 @@ function six(rng) {
 
         fillVoronoiDiagram(diagram)
     }
+
+    return () => { delete window[animId] }
 
     function fillVoronoiDiagram(diagram) {
         for (let cell of diagram.cells) {

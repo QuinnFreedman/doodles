@@ -27,10 +27,10 @@ function five(rng) {
         x: rng.nextRange(0, cols),
         y: rng.nextRange(0, rows)
     }))
-    const velocity = points.map(() => rng.nextSign() * .05)
+    const velocity = points.map(() => rng.nextSign() * .08)
     
 
-    setInterval(draw, 10)
+    const animId = startAnimating(draw, 60)
     function draw() {
         for (let y of range(rows)) {
             for (let x of range(cols)) {
@@ -80,4 +80,7 @@ function five(rng) {
         }
         ctx.stroke()
     }
+
+
+    return () => stopAnimation(animId)
 }

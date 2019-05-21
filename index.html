@@ -3,6 +3,7 @@
         <meta charset="utf-8"/>
         <!-- <script type="text/javscript" src="https://github.com/gorhill/Javascript-Voronoi/blob/41a3cae6178385836187fdacd760b6abc96cc6d9/rhill-voronoi-core.min.js"></script> -->
         <script src="voronoi.js"></script>
+        <script src="numwords.js"></script>
         <script src="util.js"></script>
         <script src="one.js"></script>
         <script src="two.js"></script>
@@ -15,11 +16,52 @@
         <canvas id="canvas"></canvas>
         <script>
             const params = (new URL(document.location)).searchParams
-            const n = params.get("n") || "one"
+            let n = params.get("n") || "one"
             const seed = params.get("seed")
-            const rng = seed ? new RNG(parseInt(seed)) : new RNG() //RNG(0xdef)
+            const makeRng = () => seed ? new RNG(parseInt(seed)) : new RNG() //RNG(0xdef)
+            let rng = makeRng()
+            console.log(n)
             console.log("seed:", rng.seed)
-            window[n](rng)
+            let deInit = window[n](rng)
+            document.querySelector("canvas").addEventListener("click", () => {
+                deInit && deInit()
+                rng = makeRng()
+                console.log("seed:", rng.seed)
+                deInit = window[n](rng)
+            })
+
+            const numbers = [
+                "one", 
+                "two", 
+                "three", 
+                "four", 
+                "five", 
+                "six", 
+                ]
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "ArrowLeft") {
+                    let index = numbers.indexOf(n)
+                    if (index > 0) {
+                        n = numbers[index - 1]
+                        deInit && deInit()
+                        rng = makeRng()
+                        console.log(n)
+                        console.log("seed:", rng.seed)
+                        deInit = window[n](rng)
+                    }
+                } else if (e.key === "ArrowRight") {
+                    let index = numbers.indexOf(n)
+                    if (index >= 0 && index + 1 < numbers.length) {
+                        n = numbers[index + 1]
+                        deInit && deInit()
+                        rng = makeRng()
+                        console.log(n)
+                        console.log("seed:", rng.seed)
+                        deInit = window[n](rng)
+                    }
+                }
+            })
         </script>
     </body>
 </html>
