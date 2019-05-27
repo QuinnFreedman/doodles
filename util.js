@@ -251,6 +251,18 @@ function roundPolly(ctx, points, radius) {
     ctx.closePath()
 }
 
+/**
+ * @param {Array} pollygon
+ */
+function drawPolly(ctx, pollygon) {
+    ctx.beginPath()
+    ctx.moveTo(...pollygon[0])
+    for (let p of pollygon.slice(1)) {
+        ctx.lineTo(...p)
+    }
+    ctx.closePath()
+}
+
 function startAnimating(callback, fps) {
 
     let fpsInterval = 1000 / fps
@@ -268,7 +280,7 @@ function startAnimating(callback, fps) {
 
         if (elapsed > fpsInterval) {
             then = now - (elapsed % fpsInterval)
-            callback()
+            callback(elapsed)
         }
     }
 
