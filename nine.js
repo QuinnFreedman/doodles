@@ -1,6 +1,54 @@
 function nine(rng) {
-    const width = 800
-    const height = 800
+    const config = {
+        width: 800,
+        height: 800,
+        numPaths: 20,
+        origin: [0, 700],
+        initialAngle: -Math.PI / 4,
+        colorFunction: function(i) { return `rgba(${(i / this.numPaths) * 255}, ${(1 - i / this.numPaths) * 255}, ${((0.5 + i / this.numPaths) * 255) % 255})`},
+        randomWalk: {
+            morphSpeed: 1 / 2000,
+            stepSize: 15,
+            noiseMagnitudeFunction: () => 1,
+            simplexStepSize: 20,
+        },
+        pointCluster: {
+            morphSpeed: 1 / 100,
+            numPoints: 4,
+            spread: 10,
+            pointSize: 1
+        }
+    }
+    return nine_core(rng, config)
+}
+
+function ten(rng) {
+    const config = {
+        width: 800,
+        height: 800,
+        numPaths: 25,
+        origin: [400, 400],
+        initialAngle: null,
+        colorFunction: function(i) { return `rgba(${(i / this.numPaths) * 255}, ${(1 - i / this.numPaths) * 255}, ${((0.5 + i / this.numPaths) * 255) % 255})`},
+        randomWalk: {
+            morphSpeed: 1 / 4000,
+            stepSize: 5,
+            noiseMagnitudeFunction: (i) => 1 + 1.1 ** (i / 5),
+            simplexStepSize: 10,
+        },
+        pointCluster: {
+            // style: "line",
+            morphSpeed: 1 / 100,
+            numPoints: 4,
+            spread: 10,
+            pointSize: 1.5,
+            separate: true
+        }
+    }
+    return nine_core(rng, config)
+}
+function nine_core(rng, config) {
+    const {width, height} = config
 
     const canvas = document.querySelector("canvas")
     const ctx = canvas.getContext("2d")
@@ -10,32 +58,26 @@ function nine(rng) {
     canvas.width = width
     canvas.height = height
 
-    let simplex = new SimplexNoise(/*rng.nextFloat.bind(rng)*/)
+    let simplex = new SimplexNoise(rng.nextFloat.bind(rng))
 
     function* randomWalk(start, seed, initialAngle, offset) {
-        const STEP = 15
-        const SPEED = 20
-        const MAGNITUDE = 1
+        const {stepSize, noiseMagnitudeFunction, simplexStepSize} = config.randomWalk
         let p = start
-        // if (typeof initialAngle === "undefined") {
-        //     initialAngle = simplex.noise3D(seed, 0, offset)
-        // }
+        if (typeof initialAngle === "undefined" || initialAngle === null) {
+            initialAngle = TWO_PI * simplex.noise2D(seed, 0)
+        }
 
         for (let i = 0; ; i++) {
             yield p
+            let noiseIndex = (i / simplexStepSize)
+            let noiseAmplification = noiseMagnitudeFunction(i) 
             let theta =
-                initialAngle +
-                MAGNITUDE * simplex.noise4D(seed, i / SPEED, offset, 0)
-            p = moveInDirection(p, theta, STEP)
+                initialAngle + noiseAmplification * simplex.noise4D(seed, noiseIndex, offset, 0)
+            p = moveInDirection(p, theta, stepSize)
         }
     }
 
-    const NUM_PATHS = 20
-    const origin = [0, height - 100]
-    const angle = -Math.PI / 4
-    const WAVE_SPEED = 2000
-    const PARTICLE_SPEED = 100
-
+    const NUM_PATHS = config.numPaths
     const pathSeeds = range(NUM_PATHS).map(() => rng.nextInt())
     console.log(pathSeeds)
 
@@ -44,13 +86,13 @@ function nine(rng) {
     function draw() {
         canvas.width = width
         for (let i of range(NUM_PATHS)) {
-            ctx.fillStyle = `rgba(${(i / NUM_PATHS) * 255}, ${(1 -
-                i / NUM_PATHS) *
-                255}, ${((0.5 + i / NUM_PATHS) * 255) % 255})`
-            const walk = randomWalk(origin, pathSeeds[i], angle, frameNumber / WAVE_SPEED)
+            ctx.strokeStyle = ctx.fillStyle = config.colorFunction.apply(config, [i])
+            const walk = randomWalk(config.origin,
+                pathSeeds[i], config.initialAngle,
+                frameNumber * config.randomWalk.morphSpeed)
             let p_idx = 0
             for (let p of islice(walk, 0, 100)) {
-                spatter(p, i, p_idx, frameNumber / PARTICLE_SPEED)
+                spatter(p, i, p_idx, frameNumber * config.pointCluster.morphSpeed)
                 p_idx++
             }
         }
@@ -58,22 +100,32 @@ function nine(rng) {
     }
 
     function spatter([x, y], path, point, frame) {
-        const density = 4
-        const spread = 10
-        const pointSize = 1
+        const {numPoints, spread, pointSize} = config.pointCluster
         ctx.beginPath()
-        for (let i of range(density)) {
-            _x = x + spread * simplex.noise4D(i + 1000, path * 100, point * 100, frame)
-            _y = y + spread * simplex.noise4D(i, path * 100, point * 100, frame) 
-            ctx.arc(_x, _y, pointSize, 0, 2 * Math.PI)
-            // _x = x + rng.normalRange(spread)
-            // _y = y + rng.normalRange(spread)
+        if (config.pointCluster.style === "line") {
+            for (let i of range(numPoints)) {
+                _x = x + spread * simplex.noise4D(i + 1000, path * 100, point * 100, frame)
+                _y = y + spread * simplex.noise4D(i, path * 100, point * 100, frame) 
+                if (i == 0) {
+                    ctx.moveTo(_x, _y)
+                } else {
+                    ctx.lineTo(_x, _y)
+                }
+            }
+            ctx.stroke()
+        } else {
+            for (let i of range(numPoints)) {
+                _x = x + spread * simplex.noise4D(i + 1000, path * 100, point * 100, frame)
+                _y = y + spread * simplex.noise4D(i, path * 100, point * 100, frame) 
+                if (config.pointCluster.separate) {
+                    ctx.moveTo(_x, _y)
+                }
+                ctx.arc(_x, _y, pointSize, 0, 2 * Math.PI)
+            }
+            ctx.fill()
         }
-        ctx.fill()
-        // ctx.beginPath()
-        // ctx.arc(x, y, pointSize, 0, 2 * Math.PI)
-        // ctx.fill()
     }
+
 
     return () => stopAnimation(animId)
 }

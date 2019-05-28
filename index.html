@@ -1,6 +1,6 @@
 <html>
     <head>
-        <meta charset="utf-8"/>
+        <meta charset="utf-8" />
         <title>Quinn Freedman · Generative Art Experements</title>
         <!-- <script type="text/javscript" src="https://github.com/gorhill/Javascript-Voronoi/blob/41a3cae6178385836187fdacd760b6abc96cc6d9/rhill-voronoi-core.min.js"></script> -->
         <script src="voronoi.js"></script>
@@ -27,7 +27,6 @@
             #title {
                 font-family: Roboto, Arial, Helvetica, sans-serif;
                 font-size: 2em;
-
             }
         </style>
     </head>
@@ -36,21 +35,22 @@
         <h1 id="title"></h1>
         <script>
             const numbers = [
-                "one", 
-                "two", 
-                "three", 
-                "four", 
-                "five", 
-                "six", 
-                "seven", 
-                "eight", 
+                "one",
+                "two",
+                "three",
+                "four",
+                "five",
+                "six",
+                "seven",
+                "eight",
                 "nine",
-                ]
+                "ten"
+            ]
 
-            const params = (new URL(document.location)).searchParams
+            const params = new URL(document.location).searchParams
             let n = params.get("n") || numbers[numbers.length - 1]
             const seed = params.get("seed")
-            const makeRng = () => seed ? new RNG(parseInt(seed)) : new RNG() //RNG(0xdef)
+            const makeRng = () => (seed ? new RNG(parseInt(seed)) : new RNG()) //RNG(0xdef)
             let rng = makeRng()
             console.log(n)
             console.log("seed:", rng.seed)
@@ -73,7 +73,7 @@
                 document.getElementById("title").innerText = n
             }
 
-            document.addEventListener("keydown", (e) => {
+            document.addEventListener("keydown", e => {
                 if (e.key === "ArrowLeft") {
                     let index = numbers.indexOf(n)
                     if (index > 0) {
