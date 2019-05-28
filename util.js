@@ -73,7 +73,7 @@ function clamp(min, max, x) {
     return x < min ? min : x > max ? max : x
 }
 
-function range(a, b) {
+function range(a, b, step) {
     let min, max
     if (b) {
         min = a
@@ -82,12 +82,29 @@ function range(a, b) {
         min = 0
         max = a
     }
+    step = step || 1
     const values = []
-    for (i = min; i < max; i++) {
+    for (i = min; i < max; i+=step) {
         values.push(i)
     }
 
     return values
+}
+
+
+function* xrange(a, b, step) {
+    let min, max
+    if (b) {
+        min = a
+        max = b
+    } else {
+        min = 0
+        max = a
+    }
+    step = step || 1
+    for (i = min; i < max; i+=step) {
+        yield i
+    }
 }
 
 function triangle(ctx, p1, p2, p3, fill) {
@@ -290,4 +307,17 @@ function startAnimating(callback, fps) {
 
 function stopAnimation(uid) {
     delete window[uid]
+}
+
+function* islice(it, start, stop) {
+    start = start || 0
+    if (typeof stop === "undefined") {
+        stop = Number.MAX_SAFE_INTEGER
+    }
+    for (let i = 0; i < stop; i++) {
+        let val = it.next().value
+        if (i >= start) {
+            yield val
+        }
+    }
 }
