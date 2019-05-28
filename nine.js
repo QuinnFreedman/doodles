@@ -40,7 +40,7 @@ function nine(rng) {
     console.log(pathSeeds)
 
     let frameNumber = 0
-    startAnimating(draw, 60)
+    const animId = startAnimating(draw, 60)
     function draw() {
         canvas.width = width
         for (let i of range(NUM_PATHS)) {
@@ -74,4 +74,6 @@ function nine(rng) {
         // ctx.arc(x, y, pointSize, 0, 2 * Math.PI)
         // ctx.fill()
     }
+
+    return () => stopAnimation(animId)
 }
