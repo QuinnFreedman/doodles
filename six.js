@@ -30,7 +30,10 @@ function six(rng) {
 
     let velocity = []
 
-    let firstTime = true
+    // start first drop right away
+    sites.push({ x: rng.normalRange(width), y: -75 })
+    velocity.push(CREEP_SPEED)
+
     let animId = startAnimating(draw, TARGET_FPS)
     // draw()
     function draw() {
@@ -39,8 +42,7 @@ function six(rng) {
         ctx.fillStyle = "#000"
         voronoi.recycle(diagram)
 
-        if (rng.nextFloat() < SPAWN_RATE || firstTime) {
-            firstTime = false
+        if (rng.nextFloat() < SPAWN_RATE) {
             sites.push({ x: rng.normalRange(width), y: -MARGIN })
             velocity.push(CREEP_SPEED)
         }
