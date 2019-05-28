@@ -16,7 +16,7 @@ function seven(rng) {
     ctx.fillStyle = "#fff"
     ctx.fillRect(0, 0, width, height)
 
-    let simplex = new SimplexNoise()
+    let simplex = new SimplexNoise(rng.nextFloat.bind(rng))
 
     let loop = []
     let looping = false
