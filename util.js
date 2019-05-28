@@ -4,7 +4,7 @@ function RNG(seed) {
     this.a = 1103515245
     this.c = 12345
 
-    this.seed = seed ? seed : Math.floor(Math.random() * (this.m - 1))
+    this.seed = (typeof seed === "number") ? seed : Math.floor(Math.random() * (this.m - 1))
 
     this.state = this.seed
 }
