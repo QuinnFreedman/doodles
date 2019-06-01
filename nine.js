@@ -18,7 +18,6 @@ function nine(rng) {
         randomWalk: {
             morphSpeed: 1 / 2000,
             stepSize: 15,
-            noiseMagnitudeFunction: () => 1,
             simplexStepSize: 20
         },
         pointCluster: {
@@ -78,7 +77,7 @@ function eleven(rng) {
             stepSize: 10,
             noiseMagnitudeFunction: i => 1 + 1.1 ** (i / 5),
             simplexStepSize: 10,
-            morphSpeedRamp: .2
+            morphSpeedRamp: 0.2
         },
         pointCluster: {
             style: STYLE_LINES,
@@ -194,7 +193,6 @@ function nine_core(rng, config) {
     return () => stopAnimation(animId)
 }
 
-
 function* randomWalk(simplex, start, seed, initialAngle, offset, config) {
     const {
         stepSize,
@@ -210,7 +208,9 @@ function* randomWalk(simplex, start, seed, initialAngle, offset, config) {
     for (let i = 0; ; i++) {
         yield p
         let noiseIndex = i / simplexStepSize
-        let noiseAmplification = noiseMagnitudeFunction(i)
+        let noiseAmplification = noiseMagnitudeFunction
+            ? noiseMagnitudeFunction(i)
+            : 1
         let t = morphSpeedRamp ? offset * i ** morphSpeedRamp : offset
         let theta =
             initialAngle +
@@ -218,4 +218,3 @@ function* randomWalk(simplex, start, seed, initialAngle, offset, config) {
         p = moveInDirection(p, theta, stepSize)
     }
 }
-
