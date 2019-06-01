@@ -28,11 +28,19 @@
                 font-family: Roboto, Arial, Helvetica, sans-serif;
                 font-size: 2em;
             }
+            
+            .source {
+                font-family: Roboto, Arial, Helvetica, sans-serif;
+                position: absolute;
+                bottom: 4;
+                left: 4;
+            }
         </style>
     </head>
     <body>
         <canvas id="canvas"></canvas>
         <h1 id="title"></h1>
+        <a class="source" href="https://github.com/QuinnFreedman/doodles">source</a>
         <script>
             const numbers = [
                 "one",
@@ -44,7 +52,8 @@
                 "seven",
                 "eight",
                 "nine",
-                "ten"
+                "ten",
+                "eleven",
             ]
 
             const params = new URL(document.location).searchParams

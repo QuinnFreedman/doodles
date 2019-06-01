@@ -321,3 +321,11 @@ function* islice(it, start, stop) {
         }
     }
 }
+
+function* enumerate(it) {
+    let i = 0
+    for (let x of it) {
+        yield [i, x]
+        i++
+    }
+}
