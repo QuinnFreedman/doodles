@@ -70,7 +70,7 @@ function paintImage13(ctx, image, [ctxWidth, ctxHeight], rng, simplex, config) {
         }
     }
 
-    shuffle(points)
+    shuffle(points, rng.nextFloat.bind(rng))
 
     function getPixelAt(x, y) {
         x = x < 0 ? 0 : x >= ctxWidth ? ctxWidth : x
