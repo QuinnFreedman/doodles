@@ -4,7 +4,10 @@ function RNG(seed) {
     this.a = 1103515245
     this.c = 12345
 
-    this.seed = (typeof seed === "number") ? seed : Math.floor(Math.random() * (this.m - 1))
+    this.seed =
+        typeof seed === "number"
+            ? seed
+            : Math.floor(Math.random() * (this.m - 1))
 
     this.state = this.seed
 }
@@ -84,13 +87,12 @@ function range(a, b, step) {
     }
     step = step || 1
     const values = []
-    for (i = min; i < max; i+=step) {
+    for (i = min; i < max; i += step) {
         values.push(i)
     }
 
     return values
 }
-
 
 function* xrange(a, b, step) {
     let min, max
@@ -102,7 +104,7 @@ function* xrange(a, b, step) {
         max = a
     }
     step = step || 1
-    for (i = min; i < max; i+=step) {
+    for (i = min; i < max; i += step) {
         yield i
     }
 }
@@ -281,14 +283,15 @@ function drawPolly(ctx, pollygon) {
 }
 
 function startAnimating(callback, fps) {
-
     let fpsInterval = 1000 / fps
     let then = Date.now()
     let uid = "animation_" + then
     window[uid] = true
 
     function animate() {
-        if (!window[uid]) { return }
+        if (!window[uid]) {
+            return
+        }
 
         requestAnimationFrame(animate)
 
@@ -327,5 +330,20 @@ function* enumerate(it) {
     for (let x of it) {
         yield [i, x]
         i++
+    }
+}
+
+function shuffle(array, random) {
+    random = random || Math.random.bind(Math)
+
+    let i = 0,
+        j = 0,
+        temp = null
+
+    for (i = array.length - 1; i > 0; i -= 1) {
+        j = Math.floor(random() * (i + 1))
+        temp = array[i]
+        array[i] = array[j]
+        array[j] = temp
     }
 }

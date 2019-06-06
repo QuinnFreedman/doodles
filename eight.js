@@ -18,30 +18,10 @@ function eight(rng) {
     const canvas = document.querySelector("canvas")
     const ctx = canvas.getContext("2d")
 
-    const TWO_PI = 2 * Math.PI
-
     canvas.width = width
     canvas.height = height
 
     let simplex = new SimplexNoise(rng.nextFloat.bind(rng))
-
-    function randomPoly(center, radius, t, varience) {
-        const numPoints = 30
-        let points = []
-        for (let i of range(numPoints)) {
-            let theta = (TWO_PI / numPoints) * i
-            let random = simplex.noise3D(
-                t,
-                Math.cos((TWO_PI * i) / numPoints),
-                Math.sin((TWO_PI * i) / numPoints)
-            )
-            random = random / 2 + 0.5
-
-            let distance = varience * radius * random + (1 - varience) * radius
-            points.push(moveInDirection(center, theta, distance))
-        }
-        return points
-    }
 
     const animId = startAnimating(draw, 60)
     // draw()
@@ -63,6 +43,7 @@ function eight(rng) {
             let dy = CENTER_RANGE * simplex.noise2D(0, t_ / CENTER_SPEED)
             let center = [width / 2 + dx, height / 2 + dy]
             let poly = randomPoly(
+                simplex,
                 center,
                 radius,
                 t_ / MORPH_SPEED,
@@ -95,3 +76,23 @@ function eight(rng) {
 
     return () => stopAnimation(animId)
 }
+
+function randomPoly(simplex, center, radius, t, varience) {
+    const TWO_PI = 2 * Math.PI
+    const numPoints = 30
+    let points = []
+    for (let i of range(numPoints)) {
+        let theta = (TWO_PI / numPoints) * i
+        let random = simplex.noise3D(
+            t,
+            Math.cos((TWO_PI * i) / numPoints),
+            Math.sin((TWO_PI * i) / numPoints)
+        )
+        random = random / 2 + 0.5
+
+        let distance = varience * radius * random + (1 - varience) * radius
+        points.push(moveInDirection(center, theta, distance))
+    }
+    return points
+}
+
