@@ -15,17 +15,41 @@ function thirteen(rng) {
 
     let simplex = new SimplexNoise(rng.nextFloat.bind(rng))
 
-    ctx.textAlign = "center"
-    ctx.fillText("Painting...", width / 2, height / 2)
+    const dropListener = e => {
+        e.preventDefault()
+        if (e.dataTransfer.files.length > 0) {
+            paintImageFromSource(URL.createObjectURL(e.dataTransfer.files[0]))
+        }
+    }
+    const dragoverListener = e => {
+        e.preventDefault()
+        e.dataTransfer.dropEffect = "copy"
+    }
+    const message = document.createElement("p")
+    message.innerText = "drag an image onto the canvas to paint it"
+    document.body.addEventListener("drop", dropListener)
+    document.body.addEventListener("dragover", dragoverListener)
+    document.body.appendChild(message)
 
-    setTimeout(() => {
+    paintImageFromSource("landscape.jpg")
+
+    function paintImageFromSource(src) {
+        ctx.textAlign = "center"
+        ctx.fillText("Painting...", width / 2, height / 2)
+
         let img = new Image()
         img.onload = () => {
             const offscreenCanvas = document.createElement("canvas")
             offscreenCanvas.width = baseImageWidth
             offscreenCanvas.height = baseImageHeight
             const offscreenContext = offscreenCanvas.getContext("2d")
-            offscreenContext.drawImage(img, 0, 0, baseImageWidth, baseImageHeight)
+            offscreenContext.drawImage(
+                img,
+                0,
+                0,
+                baseImageWidth,
+                baseImageHeight
+            )
             const data = offscreenContext.getImageData(
                 0,
                 0,
@@ -33,7 +57,7 @@ function thirteen(rng) {
                 baseImageHeight
             )
 
-            paintImage13(ctx, data, [width, height], rng, simplex, {
+            paintImage(ctx, data, [width, height], rng, simplex, {
                 stride: 5,
                 strokeWidth: 6,
                 strokeSpacingRange: 2,
@@ -42,11 +66,19 @@ function thirteen(rng) {
                 randomDirection: true
             })
         }
-        img.src = "landscape.jpg"
-    }, 10)
+        setTimeout(() => {
+            img.src = src
+        }, 100)
+    }
+
+    return () => {
+        document.body.removeEventListener("drop", dropListener)
+        document.body.removeEventListener("dragover", dragoverListener)
+        document.body.removeChild(message)
+    }
 }
 
-function paintImage13(ctx, image, [ctxWidth, ctxHeight], rng, simplex, config) {
+function paintImage(ctx, image, [ctxWidth, ctxHeight], rng, simplex, config) {
     const {
         stride,
         strokeWidth,
@@ -88,7 +120,9 @@ function paintImage13(ctx, image, [ctxWidth, ctxHeight], rng, simplex, config) {
     for ([x, y] of points) {
         const [r, g, b] = getPixelAt(x, y)
         ctx.fillStyle = `rgb(${r}, ${g}, ${b}, .4)`
-        let angle = randomDirection ? rng.nextRange(0, Math.PI * 2) : Math.PI / 2
+        let angle = randomDirection
+            ? rng.nextRange(0, Math.PI * 2)
+            : Math.PI / 2
         let walk = randomWalk(simplex, [x, y], x * y, angle, 0, {
             stepSize: 3,
             simplexStepSize: waviness
