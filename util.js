@@ -215,6 +215,18 @@ function lerp(a, b, x) {
     return a + (b - a) * x
 }
 
+function lerpVec(v1, v2, x) {
+    if (v1.length !== v2.length) {
+        throw "Vector lengths do not match"
+    }
+
+    let result = new Array(v1.length)
+    for (let i = 0; i < v1.length; i++) {
+        result[i] = lerp(v1[i], v2[i], x)
+    }
+    return result
+}
+
 function moveToward(from, to, distance) {
     let totalDistance = euclideanDistance(from, to)
     let ratio = distance / totalDistance
