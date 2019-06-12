@@ -77,9 +77,9 @@ function eight(rng) {
     return () => stopAnimation(animId)
 }
 
-function randomPoly(simplex, center, radius, t, varience) {
+function randomPoly(simplex, center, radius, t, varience, numPoints) {
     const TWO_PI = 2 * Math.PI
-    const numPoints = 30
+    numPoints = numPoints || 30
     let points = []
     for (let i of range(numPoints)) {
         let theta = (TWO_PI / numPoints) * i
