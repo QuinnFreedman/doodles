@@ -148,7 +148,7 @@ function paintImage(ctx, image, [ctxWidth, ctxHeight], rng, simplex, config) {
                 i * MORPH_SPEED,
                 MORPH_VARIENCE
             )
-            drawPolly(ctx, poly)
+            drawPoly(ctx, poly)
             // ctx.fillStyle = "#afdefe66"
             ctx.fill()
             if (shouldBreak) break

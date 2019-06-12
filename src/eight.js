@@ -63,9 +63,9 @@ function eight(rng) {
                 ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
             }
             if (SMOOTH) {
-                roundPolly(ctx, poly.map(([x, y]) => ({ x, y })), radius / 10)
+                roundPoly(ctx, poly.map(([x, y]) => ({ x, y })), radius / 10)
             } else {
-                drawPolly(ctx, poly)
+                drawPoly(ctx, poly)
             }
             ctx.fill()
         }
@@ -75,24 +75,5 @@ function eight(rng) {
     }
 
     return () => stopAnimation(animId)
-}
-
-function randomPoly(simplex, center, radius, t, varience, numPoints) {
-    const TWO_PI = 2 * Math.PI
-    numPoints = numPoints || 30
-    let points = []
-    for (let i of range(numPoints)) {
-        let theta = (TWO_PI / numPoints) * i
-        let random = simplex.noise3D(
-            t,
-            Math.cos((TWO_PI * i) / numPoints),
-            Math.sin((TWO_PI * i) / numPoints)
-        )
-        random = random / 2 + 0.5
-
-        let distance = varience * radius * random + (1 - varience) * radius
-        points.push(moveInDirection(center, theta, distance))
-    }
-    return points
 }
 

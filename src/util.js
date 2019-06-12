@@ -246,7 +246,7 @@ function approxEqual(v1, v2, epsilon) {
  * @param {Array} points A list of `{x, y}` points
  * @radius {number} how much to round the corners
  */
-function roundPolly(ctx, points, radius) {
+function roundPoly(ctx, points, radius) {
     function distance(p1, p2) {
         return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2)
     }
@@ -297,13 +297,33 @@ function roundPolly(ctx, points, radius) {
 /**
  * @param {Array} pollygon
  */
-function drawPolly(ctx, pollygon) {
+function drawPoly(ctx, pollygon) {
     ctx.beginPath()
     ctx.moveTo(...pollygon[0])
     for (let p of pollygon.slice(1)) {
         ctx.lineTo(...p)
     }
     ctx.closePath()
+}
+
+
+function randomPoly(simplex, center, radius, t, varience, numPoints) {
+    const TWO_PI = 2 * Math.PI
+    numPoints = numPoints || 30
+    let points = []
+    for (let i of range(numPoints)) {
+        let theta = (TWO_PI / numPoints) * i
+        let random = simplex.noise3D(
+            t,
+            Math.cos((TWO_PI * i) / numPoints),
+            Math.sin((TWO_PI * i) / numPoints)
+        )
+        random = random / 2 + 0.5
+
+        let distance = varience * radius * random + (1 - varience) * radius
+        points.push(moveInDirection(center, theta, distance))
+    }
+    return points
 }
 
 function startAnimating(callback, fps) {

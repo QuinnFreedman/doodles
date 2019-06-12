@@ -93,7 +93,7 @@ function six(rng) {
                 .map(([x, y]) => ({ x, y }))
 
             ctx.beginPath()
-            roundPolly(ctx, points, 20)
+            roundPoly(ctx, points, 20)
             ctx.fill()
         }
         /**

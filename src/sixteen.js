@@ -36,7 +36,6 @@ function sixteen(rng) {
                 (x + .5) * width / (NUM_FLOWERS_X),
                 (y + .5) * height / (NUM_FLOWERS_Y)
             ]
-            console.log(center)
             drawFlower(center, x * y + y)
         }
     }
@@ -62,7 +61,7 @@ function sixteen(rng) {
 
         ctx.beginPath()
         // ctx.arc(...center, 30, 0, Math.PI * 2)
-        roundPolly(ctx, middle, 5)
+        roundPoly(ctx, middle, 5)
         ctx.shadowColor = "#dc4a6a" //"#cc3a5a"
         ctx.shadowBlur = 40
         ctx.fillStyle = "#dc4a6a" 
@@ -78,7 +77,7 @@ function sixteen(rng) {
         let poly = [p1, p2, p4, p3].map(([x, y]) => ({x, y}))
         ctx.fillStyle = color
         ctx.beginPath()
-        roundPolly(ctx, poly, cornerRadius)
+        roundPoly(ctx, poly, cornerRadius)
         ctx.fill()
     }
 }
