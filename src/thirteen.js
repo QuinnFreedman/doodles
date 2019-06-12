@@ -58,11 +58,15 @@ function thirteen(rng) {
             )
 
             paintImage(ctx, data, [width, height], rng, simplex, {
-                stride: 5,
+                stride: 4,
                 strokeWidth: 6,
                 strokeSpacingRange: 2,
                 maxColorDistance: 600,
                 waviness: 20,
+                maxStrokeLength: 15,
+                minStrokeLength: 3,
+                strokeStepSize: 2,
+                strokeOpacity: .4,
                 randomDirection: true
             })
         }
@@ -85,6 +89,10 @@ function paintImage(ctx, image, [ctxWidth, ctxHeight], rng, simplex, config) {
         strokeSpacingRange,
         maxColorDistance,
         waviness,
+        maxStrokeLength,
+        minStrokeLength,
+        strokeStepSize,
+        strokeOpacity,
         randomDirection
     } = config
     const imgWidth = image.width
@@ -94,7 +102,7 @@ function paintImage(ctx, image, [ctxWidth, ctxHeight], rng, simplex, config) {
     const yScale = imgHeight / ctxHeight
     const points = []
     for (let y = 0; y < ctxHeight; y += stride) {
-        for (let x = 0; x < ctxWidth; x += stride) {
+        for (let x = 0; x < ctxWidth; x += stride) { 
             points.push([
                 rng.normalRange(x - strokeSpacingRange, x + strokeSpacingRange),
                 rng.normalRange(y - strokeSpacingRange, y + strokeSpacingRange)
@@ -119,25 +127,19 @@ function paintImage(ctx, image, [ctxWidth, ctxHeight], rng, simplex, config) {
 
     for ([x, y] of points) {
         const [r, g, b] = getPixelAt(x, y)
-        ctx.fillStyle = `rgb(${r}, ${g}, ${b}, .4)`
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${strokeOpacity})`
         let angle = randomDirection
             ? rng.nextRange(0, Math.PI * 2)
             : Math.PI / 2
         let walk = randomWalk(simplex, [x, y], x * y, angle, 0, {
-            stepSize: 3,
+            stepSize: strokeStepSize,
             simplexStepSize: waviness
         })
-        for (let [i, p] of enumerate(islice(walk, 0, 10))) {
+        for (let [i, p] of enumerate(islice(walk, 0, maxStrokeLength))) {
             const [r_, g_, b_] = getPixelAt(...p)
             const distance = (r - r_) ** 2 + (g - g_) ** 2 + (b - b_) ** 2
-            let shouldBreak = false
-            if (distance > maxColorDistance) {
-                if (i > 3) {
-                    break
-                } else {
-                    ctx.fillStyle = `rgb(${r}, ${g}, ${b}, .4)`
-                    shouldBreak = false
-                }
+            if (distance > maxColorDistance && i > minStrokeLength) {
+                break
             }
             const MORPH_SPEED = 1 / 100
             const MORPH_VARIENCE = 0.5
@@ -146,12 +148,12 @@ function paintImage(ctx, image, [ctxWidth, ctxHeight], rng, simplex, config) {
                 p,
                 strokeWidth,
                 i * MORPH_SPEED,
-                MORPH_VARIENCE
+                MORPH_VARIENCE,
+                10
             )
             drawPoly(ctx, poly)
             // ctx.fillStyle = "#afdefe66"
             ctx.fill()
-            if (shouldBreak) break
         }
     }
 }
