@@ -391,3 +391,21 @@ function shuffle(array, random) {
         array[j] = temp
     }
 }
+
+/**
+ * @param {Array} data
+ */
+function calculateMeanStdv(data) {
+    let sum = 0
+    for (let x of data) {
+        sum += x
+    }
+    let mean = sum / data.length
+
+    let sumSqrdDif = 0
+    for (let x of data) {
+        sumSqrdDif += (x - mean) ** 2
+    }
+    let meanSqrdDif = sumSqrdDif / data.length
+    return [mean, Math.sqrt(meanSqrdDif)]
+}
