@@ -5,6 +5,7 @@
         <!-- <script type="text/javscript" src="https://github.com/gorhill/Javascript-Voronoi/blob/41a3cae6178385836187fdacd760b6abc96cc6d9/rhill-voronoi-core.min.js"></script> -->
         <script src="lib/voronoi.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.1/seedrandom.min.js"></script>
+        <script>Math.seedrandom || document.write('<script src="lib/seedrandom.js">\x3C/script>')</script>
         <!-- <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/836/simplex-noise.min.js"></script> -->
         <script src="lib/simplex-noise.min.js"></script>
         <script src="src/util.js"></script>
@@ -25,6 +26,7 @@
         <script src="src/seventeen.js"></script>
         <script src="src/eighteen.js"></script>
         <script src="src/nineteen.js"></script>
+        <script src="src/twenty.js"></script>
         <style type="text/css">
             body {
                 display: flex;
@@ -70,7 +72,8 @@
                 "sixteen",
                 "seventeen",
                 "eighteen",
-                "nineteen"
+                "nineteen",
+                "twenty"
             ]
 
             const params = new URL(document.location).searchParams
