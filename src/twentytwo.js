@@ -48,18 +48,16 @@ function twentytwo(rng) {
 
             // Random rotation
             ctx.translate(.5, .5)
-            ctx.rotate(Math.floor(Math.random() * 4) * Math.PI / 2)
+            ctx.rotate(rng.nextRange(4) * Math.PI / 2)
             ctx.translate(-.5, -.5)
 
             // Draw random shape
             ctx.beginPath()
-            shapes[Math.floor(Math.random() * shapes.length)]()
-
+            rng.choice(shapes)()
 
             ctx.restore()
 
-            // ctx.strokeStyle = Math.random() > 0.5 ? COLOR_FG1 : COLOR_FG2
-            if (Math.random() > 0.5) {
+            if (rng.nextBool()) {
                 ctx.globalCompositeOperation = 'destination-over'
                 ctx.strokeStyle = COLOR_FG1
             } else {
