@@ -17,7 +17,7 @@ function twentytwo(rng) {
     canvas.width = width
     canvas.height = height
 
-    let shapes = [
+    const shapes = [
         () => {},
         () => {
             ctx.moveTo(0, 0)
@@ -32,9 +32,6 @@ function twentytwo(rng) {
         () => {
             ctx.arc(0, 0, 1, 0, Math.PI / 2)
         },
-        // () => {
-        //     ctx.arc(.5, .5, .5, 0, 2 * Math.PI)
-        // },
     ]
 
     ctx.lineCap = "round" 
