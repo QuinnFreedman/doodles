@@ -86,7 +86,8 @@
             const makeRng = () =>
                 seed
                     ? new RNG(parseInt(seed), true)
-                    : new RNG(Math.random(), true)
+                    : new RNG(Math.floor(Math.random() *
+                        Number.MAX_SAFE_INTEGER), true)
             let rng = makeRng()
             console.log(n)
             console.log("seed:", rng.seed)
