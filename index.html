@@ -28,6 +28,8 @@
         <script src="src/nineteen.js"></script>
         <script src="src/twenty.js"></script>
         <script src="src/twentyone.js"></script>
+        <script src="src/twentytwo.js"></script>
+        <script src="src/twentythree.js"></script>
         <style type="text/css">
             body {
                 display: flex;
@@ -75,7 +77,9 @@
                 "eighteen",
                 "nineteen",
                 "twenty",
-                "twentyone"
+                "twentyone",
+                "twentytwo",
+                "twentythree"
             ]
 
             const params = new URL(document.location).searchParams
@@ -84,7 +88,8 @@
             const makeRng = () =>
                 seed
                     ? new RNG(parseInt(seed), true)
-                    : new RNG(Math.random(), true)
+                    : new RNG(Math.floor(Math.random() *
+                        Number.MAX_SAFE_INTEGER), true)
             let rng = makeRng()
             console.log(n)
             console.log("seed:", rng.seed)
