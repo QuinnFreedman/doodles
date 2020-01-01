@@ -318,6 +318,21 @@ function drawPoly(ctx, pollygon) {
     ctx.closePath()
 }
 
+function regularPolygon(ctx, x, y, radius, n) {
+    ctx.moveTo(
+        x + radius * Math.cos(0),
+        y + radius * Math.sin(0)
+    )
+
+    for (let i = 1; i < n + 1; i++) {
+        let theta = i * 2 * Math.PI / n
+        ctx.lineTo(
+            x + radius * Math.cos(theta),
+            y + radius * Math.sin(theta)
+        )
+    }
+}
+
 
 function randomPoly(simplex, center, radius, t, varience, numPoints) {
     const TWO_PI = 2 * Math.PI
