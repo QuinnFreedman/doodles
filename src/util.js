@@ -42,7 +42,7 @@ RNG.prototype.nextSign = function() {
     return this.nextBool() ? 1 : -1
 }
 /**
- * returns in range [start, end): including start, excluding end
+ * returns integer in range [start, end): including start, excluding end
  * @param {number} start
  * @param {number} end
  */
@@ -55,6 +55,21 @@ RNG.prototype.nextRange = function(start, end) {
     let rangeSize = end - start
     let randomUnder1 = this.nextFloat()
     return start + Math.floor(randomUnder1 * rangeSize)
+}
+/**
+ * returns number in range [start, end): including start, excluding end
+ * @param {number} start
+ * @param {number} end
+ */
+RNG.prototype.nextFloatRange = function(start, end) {
+    if (typeof end === "undefined") {
+        end = start
+        start = 0
+    }
+    // can't modulu nextInt because of weak randomness in lower bits
+    let rangeSize = end - start
+    let randomUnder1 = this.nextFloat()
+    return start + randomUnder1 * rangeSize
 }
 RNG.prototype.choice = function(array) {
     return array[this.nextRange(0, array.length)]
@@ -155,6 +170,7 @@ function setPixel(ctx, [x, y], color) {
 }
 
 function lerpColor(colorA, colorB, t) {
+    t = t < 0 ? 0 : t > 1 ? 1 : t
     if (typeof colorA === "string") {
         colorA = rgbToHex(colorA)
     }
@@ -189,11 +205,7 @@ function rgbToHex(rgbOrHex) {
         return [r, g, b].map(x => x / 255)
     } else if (Array.isArray(rgbOrHex)) {
         let r, g, b
-        if (rgbOrHex.some(isFloat)) {
-            ;[r, g, b] = rgbOrHex.map(x => Math.round(x * 255))
-        } else {
-            ;[r, g, b] = rgbOrHex
-        }
+        ;[r, g, b] = rgbOrHex.map(x => Math.round(x * 255))
 
         const numberToHex = c => {
             var hex = c.toString(16)
@@ -312,6 +324,21 @@ function drawPoly(ctx, pollygon) {
         ctx.lineTo(...p)
     }
     ctx.closePath()
+}
+
+function regularPolygon(ctx, x, y, radius, n) {
+    ctx.moveTo(
+        x + radius * Math.cos(0),
+        y + radius * Math.sin(0)
+    )
+
+    for (let i = 1; i < n + 1; i++) {
+        let theta = i * 2 * Math.PI / n
+        ctx.lineTo(
+            x + radius * Math.cos(theta),
+            y + radius * Math.sin(theta)
+        )
+    }
 }
 
 
