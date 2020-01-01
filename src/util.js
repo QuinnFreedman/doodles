@@ -241,16 +241,24 @@ function approxEqual(v1, v2, epsilon) {
 }
 
 /**
+ * Returns the distance between two {x, y} or [x, y] points
+ */
+function distance(p1, p2) {
+    if (Array.isArray(p1) && Array.isArray(p2)) {
+        p1 = {x: p1[0], y: p1[1]}
+        p2 = {x: p2[0], y: p2[1]}
+    }
+    return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2)
+}
+
+
+/**
  * Draws a polygon with rounded corners
  * @param {CanvasRenderingContext2D} ctx The canvas context
  * @param {Array} points A list of `{x, y}` points
  * @radius {number} how much to round the corners
  */
 function roundPoly(ctx, points, radius) {
-    function distance(p1, p2) {
-        return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2)
-    }
-
     function lerp2D(p1, p2, t) {
         return {
             x: lerp(p1.x, p2.x, t),
