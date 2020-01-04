@@ -99,6 +99,12 @@ RNG.prototype.normalRange = function(start, end) {
     return clamp(start, end, this.normal(mean, stdev))
 }
 
+
+RNG.prototype.biasedRange = function (max, min, bias) {
+    return min + (max - min) * (this.nextFloat() ** bias)
+}
+
+
 function clamp(min, max, x) {
     return x < min ? min : x > max ? max : x
 }
