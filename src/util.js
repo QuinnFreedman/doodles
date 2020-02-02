@@ -354,14 +354,16 @@ function drawPoly(ctx, pollygon) {
     ctx.closePath()
 }
 
-function regularPolygon(ctx, x, y, radius, n) {
+function regularPolygon(ctx, x, y, radius, n, rotation) {
+    rotation = rotation || 0
+
     ctx.moveTo(
-        x + radius * Math.cos(0),
-        y + radius * Math.sin(0)
+        x + radius * Math.cos(rotation),
+        y + radius * Math.sin(rotation)
     )
 
     for (let i = 1; i < n + 1; i++) {
-        let theta = i * 2 * Math.PI / n
+        let theta = rotation + i * 2 * Math.PI / n
         ctx.lineTo(
             x + radius * Math.cos(theta),
             y + radius * Math.sin(theta)
