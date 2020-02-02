@@ -184,14 +184,29 @@ function lerpColor(colorA, colorB, t) {
         colorB = rgbToHex(colorB)
     }
 
-    const [ar, ag, ab] = colorA
-    const [br, bg, bb] = colorB
+    if (colorA.length == 3 && colorB.length == 3) {
+        const [ar, ag, ab] = colorA
+        const [br, bg, bb] = colorB
 
-    return rgbToHex([
-        ar + (br - ar) * t,
-        ag + (bg - ag) * t,
-        ab + (bb - ab) * t
-    ])
+        return rgbToHex([
+            ar + (br - ar) * t,
+            ag + (bg - ag) * t,
+            ab + (bb - ab) * t
+        ])
+    } else {
+        const [ar, ag, ab] = colorA
+        const [br, bg, bb] = colorB
+        aa = colorA.length == 3 ? 1 : colorA[3]
+        ba = colorB.length == 3 ? 1 : colorB[3]
+
+        return rgbToHex([
+            ar + (br - ar) * t,
+            ag + (bg - ag) * t,
+            ab + (bb - ab) * t,
+            aa + (ba - aa) * t
+        ])
+
+    }
 }
 
 function isFloat(n) {
@@ -218,7 +233,14 @@ function rgbToHex(rgbOrHex) {
             return hex.length == 1 ? "0" + hex : hex
         }
 
-        return "#" + numberToHex(r) + numberToHex(g) + numberToHex(b)
+        color = "#" + numberToHex(r) + numberToHex(g) + numberToHex(b)
+
+        if (rgbOrHex.length > 3) {
+            a = Math.round(rgbOrHex[3] * 255)
+            color += numberToHex(a)
+        }
+
+        return color
     }
 }
 
