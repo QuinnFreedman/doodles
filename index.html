@@ -52,7 +52,7 @@
 
             .source {
                 font-family: Roboto, Arial, Helvetica, sans-serif;
-                position: absolute;
+                position: fixed;
                 bottom: 4;
                 left: 4;
             }
@@ -111,12 +111,14 @@
             console.log("seed:", rng.seed)
             document.getElementById("title").innerText = n
             let deInit = window[n](rng)
-            document.querySelector("canvas").addEventListener("click", () => {
+            document.querySelector("canvas").addEventListener("click", restart_page)
+
+            function restart_page() {
                 deInit && deInit()
                 rng = makeRng()
                 console.log("seed:", rng.seed)
                 deInit = window[n](rng)
-            })
+            }
 
             function go_to(index) {
                 n = numbers[index]
@@ -128,17 +130,29 @@
                 document.getElementById("title").innerText = n
             }
 
+            let keys = new Map()
+            document.addEventListener("keyup", e => {
+                keys.set(e.key, false)
+            })
             document.addEventListener("keydown", e => {
-                if (e.key === "ArrowLeft") {
+                let key = e.key
+                if (keys.get(key)) {
+                    return
+                }
+                keys.set(key, true)
+                
+                if (key === "ArrowLeft") {
                     let index = numbers.indexOf(n)
                     if (index > 0) {
                         go_to(index - 1)
                     }
-                } else if (e.key === "ArrowRight") {
+                } else if (key === "ArrowRight") {
                     let index = numbers.indexOf(n)
                     if (index >= 0 && index + 1 < numbers.length) {
                         go_to(index + 1)
                     }
+                } else if (key === "Enter" || key == " ") {
+                    restart_page()
                 }
             })
         </script>
