@@ -34,8 +34,11 @@ RNG.prototype.nextFloat = function() {
     }
 }
 
-RNG.prototype.nextBool = function() {
-    return this.nextFloat() < 0.5
+RNG.prototype.nextBool = function(bias) {
+    if (typeof(bias) == "undefined") {
+        bias = 0.5
+    }
+    return this.nextFloat() < bias
 }
 
 RNG.prototype.nextSign = function() {
