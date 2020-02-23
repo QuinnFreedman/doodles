@@ -1,4 +1,4 @@
-function thirtytwo(rng) {
+function thirtyone(rng) {
     const canvas = document.querySelector("canvas")
     const ctx = canvas.getContext("2d")
 
