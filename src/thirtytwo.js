@@ -5,6 +5,7 @@ function thirtytwo(rng) {
 
         const WIDTH = 800
         const HEIGHT = 800
+        const MARGIN = 20
 
         canvas.width = WIDTH
         canvas.height = HEIGHT
@@ -32,7 +33,8 @@ function thirtytwo(rng) {
             PALETTE.reverse()
         }
 
-        drawCircles(numbers, ctx, WIDTH, HEIGHT, PALETTE)
+        ctx.translate(MARGIN, MARGIN)
+        drawCircles(numbers, ctx, WIDTH - 2 * MARGIN, HEIGHT- 2 * MARGIN, PALETTE)
     }
 
     /**
