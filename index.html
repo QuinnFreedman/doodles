@@ -46,6 +46,17 @@
                 font-family: Roboto, Arial, Helvetica, sans-serif;
             }
 
+            .container {
+                display: flex;
+                align-items: stretch;
+                justify-content: center;
+                flex-direction: row;
+                width: 100%;
+            }
+            .container div {
+                flex: 1;
+            }
+
             #title {
                 font-size: 2em;
             }
@@ -59,7 +70,11 @@
         </style>
     </head>
     <body>
-        <canvas id="canvas"></canvas>
+        <div class="container">
+            <div id="nav_left"></div>
+            <canvas id="canvas"></canvas>
+            <div id="nav_right"></div>
+        </div>
         <h1 id="title"></h1>
         <a class="source" href="https://github.com/QuinnFreedman/doodles">source</a>
         <script>
@@ -112,6 +127,8 @@
             document.getElementById("title").innerText = n
             let deInit = window[n](rng)
             document.querySelector("canvas").addEventListener("click", restart_page)
+            document.querySelector("#nav_left").addEventListener("click", moveLeft)
+            document.querySelector("#nav_right").addEventListener("click", moveRight)
 
             function restart_page() {
                 deInit && deInit()
@@ -129,6 +146,20 @@
                 deInit = window[n](rng)
                 document.getElementById("title").innerText = n
             }
+            
+            function moveLeft() {
+                let index = numbers.indexOf(n)
+                if (index > 0) {
+                    go_to(index - 1)
+                }
+            }
+
+            function moveRight() {
+                let index = numbers.indexOf(n)
+                if (index >= 0 && index + 1 < numbers.length) {
+                    go_to(index + 1)
+                }
+            }
 
             let keys = new Map()
             document.addEventListener("keyup", e => {
@@ -136,21 +167,13 @@
             })
             document.addEventListener("keydown", e => {
                 let key = e.key
-                if (keys.get(key)) {
-                    return
-                }
+                if (keys.get(key)) return
                 keys.set(key, true)
                 
                 if (key === "ArrowLeft") {
-                    let index = numbers.indexOf(n)
-                    if (index > 0) {
-                        go_to(index - 1)
-                    }
+                    moveLeft()
                 } else if (key === "ArrowRight") {
-                    let index = numbers.indexOf(n)
-                    if (index >= 0 && index + 1 < numbers.length) {
-                        go_to(index + 1)
-                    }
+                    moveRight()
                 } else if (key === "Enter" || key == " ") {
                     restart_page()
                 }
