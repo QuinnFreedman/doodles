@@ -1,6 +1,22 @@
+async function cachedLoad(url) {
+    window.loadedResources ||= {}
+    let loaded = window.loadedResources[url]
+    if (loaded) {
+        return loaded
+    }
+
+    return fetch(url)
+        .then(x => x.text())
+        .then(x => {
+            window.loadedResources ||= {}
+            window.loadedResources[url] = x
+            return x
+        })
+}
+
 function thirtyfour(rng) {
 
-    const precision = `#version 300 es
+    const header = `#version 300 es
     #ifdef GL_ES
     precision mediump float;
     #endif
@@ -69,12 +85,11 @@ function thirtyfour(rng) {
     canvas.width = CANVAS_WIDTH
     canvas.height = CANVAS_HEIGHT
 
-    fetch("https://raw.githubusercontent.com/ashima/webgl-noise/master/src/noise2D.glsl")
+    cachedLoad("https://raw.githubusercontent.com/ashima/webgl-noise/master/src/noise2D.glsl")
     //fetch("https://raw.githubusercontent.com/ashima/webgl-noise/master/src/cellular2D.glsl")
-        .then(x => x.text())
         .then(x => x.replace(/^#version\s\d+/, ""))
         .then(glslLib => {
-            source =  precision + glslLib + fsSource
+            source =  header + glslLib + fsSource
             //console.log(source);
             const context = create2dGlContext(canvas, source, ["seed"], "300 es");
 
