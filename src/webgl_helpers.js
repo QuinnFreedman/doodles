@@ -5,13 +5,19 @@
 //
 
 [window.create2dGlContext, window.draw2dGl] = (function(){
-const vsSource = `
-  attribute vec4 aVertexPosition;
 
-  void main() {
-    gl_Position = aVertexPosition;
-  }
-`;
+function getVsSource(version) {
+    const attribute = version && version[0] === "3" ? "in" : "attribute"
+    const versionStr = version ? `#version ${version}` : "";
+    
+    return `${versionStr}
+      ${attribute} vec4 aVertexPosition;
+
+      void main() {
+        gl_Position = aVertexPosition;
+      }
+    `;
+}
 
 
 //
@@ -96,9 +102,10 @@ function initBuffers(gl) {
   };
 }
 
-function create2dGlContext(canvas, fsSource, uniformNames) {
-    const gl = canvas.getContext("webgl")
-    
+function create2dGlContext(canvas, fsSource, uniformNames, version=null) {
+    const gl = canvas.getContext("webgl2")
+
+    vsSource = getVsSource(version)
     const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 
     const uniformLocations = {

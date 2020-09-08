@@ -56,7 +56,7 @@
                 flex-direction: row;
                 width: 100%;
             }
-            .container div {
+            .container .nav {
                 flex: 1;
             }
 
@@ -74,9 +74,11 @@
     </head>
     <body>
         <div class="container">
-            <div id="nav_left"></div>
-            <canvas id="canvas"></canvas>
-            <div id="nav_right"></div>
+            <div id="nav_left" class="nav"></div>
+            <div id="canvas-container">
+                <canvas id="canvas"></canvas>
+            </div>
+            <div id="nav_right" class="nav"></div>
         </div>
         <h1 id="title"></h1>
         <a class="source" href="https://github.com/QuinnFreedman/doodles">source</a>
@@ -131,7 +133,7 @@
             console.log("seed:", rng.seed)
             document.getElementById("title").innerText = n
             let deInit = window[n](rng)
-            document.querySelector("canvas").addEventListener("click", restart_page)
+            document.querySelector("#canvas-container").addEventListener("click", restart_page)
             document.querySelector("#nav_left").addEventListener("click", moveLeft)
             document.querySelector("#nav_right").addEventListener("click", moveRight)
 
