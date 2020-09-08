@@ -48,6 +48,7 @@
                 justify-content: center;
                 flex-direction: column;
                 font-family: Roboto, Arial, Helvetica, sans-serif;
+                margin: 0;
             }
 
             .container {
@@ -59,10 +60,22 @@
             }
             .container .nav {
                 flex: 1;
+                cursor: pointer;
+            }
+            
+            .container .nav:first-child:hover {
+                background-image: linear-gradient(to left, #00000000, #00000000, #00000050);
+            }
+            .container .nav:last-child:hover {
+                background-image: linear-gradient(to right, #00000000, #00000000, #00000050);
             }
 
             #title {
                 font-size: 2em;
+            }
+
+            #canvas-container {
+                margin-top: 8px;
             }
 
             .source {
@@ -70,6 +83,10 @@
                 position: fixed;
                 bottom: 4;
                 left: 4;
+            }
+
+            canvas {
+                cursor: pointer;
             }
         </style>
     </head>
