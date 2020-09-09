@@ -103,7 +103,7 @@ function initBuffers(gl) {
 }
 
 function create2dGlContext(canvas, fsSource, uniformNames, version=null) {
-    const gl = canvas.getContext("webgl2")
+    const gl = canvas.getContext("webgl2", {premultipliedAlpha: false})
 
     vsSource = getVsSource(version)
     const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
