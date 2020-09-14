@@ -17,7 +17,6 @@ function thirtyseven(rng) {
     const COLUMN_SPACING = 350
 
     const SPACING = .5
-    ctx.beginPath()
     ctx.strokeStyle = "#0003"
 
     const NUM_RIBBONS = 3
@@ -39,13 +38,16 @@ function thirtyseven(rng) {
             leftY += generators.leftY.noise2D(0, row / Y_RATE) * Y_MAGNITUDE / 2 + .5
             rightY += generators.rightY.noise2D(0, row / Y_RATE) * Y_MAGNITUDE / 2 + .5
 
+            //if (row % 5 === 0) {
+                ctx.beginPath()
                 ctx.moveTo(leftX, leftY)
                 ctx.lineTo(rightX, rightY)
+                ctx.stroke()
+            //}
 
             row++
         }
     }
-    ctx.stroke()
     
 
 }
