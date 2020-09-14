@@ -1,3 +1,39 @@
+function bloom(ctx, center, radius, color) {
+    const RAY_WIDTH = 10
+    const PI = Math.PI
+    const NUM_RAYS = 4
+    let theta = 0
+    for (let i of range(NUM_RAYS)) {
+        let theta = (i / NUM_RAYS) * 2 * PI
+        let tip = moveInDirection(center, theta, radius)
+        
+        ctx.beginPath()
+        ctx.fillStyle = "#fff"
+        ctx.translate(...center)
+        ctx.rotate(theta)
+        ctx.scale(1, .1)
+
+        let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, radius)
+        grad.addColorStop(0, "white")
+        grad.addColorStop(1, "#ffffff00")
+        ctx.fillStyle = grad
+        
+        ctx.fillRect(0, -radius, radius, radius * 2)
+        ctx.fill()
+        ctx.resetTransform()
+    }
+    
+    let grad2 = ctx.createRadialGradient(...center, 10, ...center, radius / 2.3)
+    grad2.addColorStop(0, "#ffff")
+    grad2.addColorStop(.7, "#fff3")
+    grad2.addColorStop(.85, "#fff8")
+    grad2.addColorStop(1, "#fff0")
+    ctx.fillStyle = grad2
+    ctx.beginPath()
+    ctx.arc(...center, radius, 0, 2 * Math.PI)
+    ctx.fill()
+}
+
 function thirtysix(rng) {
 
     const header = `#version 300 es
@@ -62,6 +98,24 @@ function thirtysix(rng) {
             ctx.fillStyle = "#000"
             ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
+            function drawCross(x, y) {
+                let l = 1;
+                ctx.moveTo(x - l, y)
+                ctx.lineTo(x + l, y)
+                ctx.moveTo(x, y - l)
+                ctx.lineTo(x, y + l)
+            }
+
+            ctx.beginPath()
+            for (let i of range(500)) {
+                let x = rng.nextRange(CANVAS_WIDTH)
+                let y = rng.nextRange(CANVAS_HEIGHT)
+                drawCross(x, y);
+            }
+            ctx.strokeStyle = "#fff"
+            ctx.stroke()
+            ctx.beginPath()
+
             const colors = [
                 [[0, 1, 1], [0, 1, 0]],
                 [[1, 0, 1], [0, 0, 1]],
@@ -100,6 +154,12 @@ function thirtysix(rng) {
                 ctx.fillStyle = grad
                 ctx.fill()
             }
+            */
+
+            /*
+            let [x2, y2] = moveInDirection([x, y], rng.nextFloatRange(0, 2 * Math.PI), r)
+            let r2 = 120
+            bloom(ctx, [x2, y2], r2, "#fff")
             */
         })
 
