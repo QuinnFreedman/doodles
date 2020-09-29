@@ -291,7 +291,15 @@ function distance(p1, p2) {
         p1 = {x: p1[0], y: p1[1]}
         p2 = {x: p2[0], y: p2[1]}
     }
-    return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2)
+    return Math.sqrt(Math.abs(p1.x - p2.x) ** 2 + Math.abs(p1.y - p2.y) ** 2)
+}
+
+
+function lerp2D(p1, p2, t) {
+    return {
+        x: lerp(p1.x, p2.x, t),
+        y: lerp(p1.y, p2.y, t)
+    }
 }
 
 
@@ -302,13 +310,6 @@ function distance(p1, p2) {
  * @radius {number} how much to round the corners
  */
 function roundPoly(ctx, points, radius) {
-    function lerp2D(p1, p2, t) {
-        return {
-            x: lerp(p1.x, p2.x, t),
-            y: lerp(p1.y, p2.y, t)
-        }
-    }
-
     const numPoints = points.length
 
     let corners = []

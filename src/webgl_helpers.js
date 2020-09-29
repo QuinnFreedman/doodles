@@ -8,13 +8,19 @@
 
 function getVsSource(version) {
     const attribute = version && version[0] === "3" ? "in" : "attribute"
+    const varying = version && version[0] === "3" ? "out" : "varying"
     const versionStr = version ? `#version ${version}` : "";
     
     return `${versionStr}
       ${attribute} vec4 aVertexPosition;
+      
+      ${attribute} vec2 a_texCoord;
+      ${varying} vec2 v_texCoord;
 
       void main() {
         gl_Position = aVertexPosition;
+
+        v_texCoord = a_texCoord;
       }
     `;
 }
@@ -128,7 +134,60 @@ function create2dGlContext(canvas, fsSource, uniformNames, version=null) {
     return { gl, programInfo, buffers, resolution }
 }
 
-function draw2dGl({ gl, programInfo, buffers, resolution }, uniforms) {
+function setImage(gl, programInfo, image) {
+    const texCoordAttributeLocation = gl.getAttribLocation(programInfo.program, "a_texCoord")
+    const imageLocation = gl.getUniformLocation(programInfo.program, "u_image")
+    
+    // provide texture coordinates for the rectangle.
+    const texCoordBuffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        0.0,  0.0,
+        1.0,  0.0,
+        0.0,  1.0,
+        1.0,  1.0,
+        ]), gl.STATIC_DRAW)
+    gl.enableVertexAttribArray(texCoordAttributeLocation)
+    const size = 2          // 2 components per iteration
+    const type = gl.FLOAT   // the data is 32bit floats
+    const normalize = false // don't normalize the data
+    const stride = 0        // 0 = move forward size * sizeof(type) each iteration to get the next position
+    const offset = 0        // start at the beginning of the buffer
+    gl.vertexAttribPointer(
+        texCoordAttributeLocation, size, type, normalize, stride, offset)
+
+    // Create a texture.
+    const texture = gl.createTexture()
+
+    // make unit 0 the active texture uint
+    // (ie, the unit all other texture commands will affect
+    gl.activeTexture(gl.TEXTURE0 + 0)
+
+    // Bind it to texture unit 0' 2D bind point
+    gl.bindTexture(gl.TEXTURE_2D, texture)
+
+    // Set the parameters so we don't need mips and so we're not filtering
+    // and we don't repeat
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+
+    // Upload the image into the texture.
+    const mipLevel = 0                // the largest mip
+    const internalFormat = gl.RGBA    // format we want in the texture
+    const srcFormat = gl.RGBA         // format of data we are supplying
+    const srcType = gl.UNSIGNED_BYTE  // type of data we are supplying
+    gl.texImage2D(gl.TEXTURE_2D,
+                  mipLevel,
+                  internalFormat,
+                  srcFormat,
+                  srcType,
+                  image)
+    gl.uniform1i(imageLocation, 0)
+}
+
+function draw2dGl({ gl, programInfo, buffers, resolution }, uniforms, image=null) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
     gl.clearDepth(1.0);                 // Clear everything
     gl.enable(gl.DEPTH_TEST);           // Enable depth testing
@@ -187,6 +246,10 @@ function draw2dGl({ gl, programInfo, buffers, resolution }, uniforms) {
             gl.uniform1f(programInfo.uniformLocations[key], val)
         }
         
+    }
+
+    if (image) {
+        setImage(gl, programInfo, image)
     }
         
 
