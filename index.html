@@ -8,42 +8,19 @@
         <script>Math.seedrandom || document.write('<script src="lib/seedrandom.js">\x3C/script>')</script>
         <!-- <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/836/simplex-noise.min.js"></script> -->
         <script src="lib/simplex-noise.min.js"></script>
+        <script src="src/numbers.js"></script>
         <script src="src/util.js"></script>
         <script src="src/webgl_helpers.js"></script>
-        <script src="src/one.js"></script>
-        <script src="src/two.js"></script>
-        <script src="src/three.js"></script>
-        <script src="src/four.js"></script>
-        <script src="src/five.js"></script>
-        <script src="src/six.js"></script>
-        <script src="src/seven.js"></script>
-        <script src="src/eight.js"></script>
-        <script src="src/nine.js"></script>
-        <script src="src/twelve.js"></script>
-        <script src="src/thirteen.js"></script>
-        <script src="src/fourteen.js"></script>
-        <script src="src/fifteen.js"></script>
-        <script src="src/sixteen.js"></script>
-        <script src="src/seventeen.js"></script>
-        <script src="src/eighteen.js"></script>
-        <script src="src/nineteen.js"></script>
-        <script src="src/twenty.js"></script>
-        <script src="src/twentyone.js"></script>
-        <script src="src/twentytwo.js"></script>
-        <script src="src/twentythree.js"></script>
-        <script src="src/twentyfour.js"></script>
-        <script src="src/twentyfive.js"></script>
-        <script src="src/twentysix.js"></script>
-        <script src="src/twentyeight.js"></script>
-        <script src="src/twentynine.js"></script>
-        <script src="src/thirtyone.js"></script>
-        <script src="src/thirtytwo.js"></script>
-        <script src="src/thirtythree.js"></script>
-        <script src="src/thirtyfour.js"></script>
-        <script src="src/thirtyfive.js"></script>
-        <script src="src/thirtysix.js"></script>
-        <script src="src/thirtyseven.js"></script>
-        <script src="src/thirtyeight.js"></script>
+        <script>
+            const MAX_NUMBER = 38
+        </script>
+        <script>
+            for (let i = 1; i <= MAX_NUMBER; i++) {
+                let name = numberName(i)
+                document.write(`<script src="src/${name}.js"></script` + ">")
+            }
+        </script>
+
         <style type="text/css">
             body {
                 display: flex;
@@ -104,49 +81,8 @@
         <h1 id="title"></h1>
         <a class="source" href="https://github.com/QuinnFreedman/doodles">source</a>
         <script>
-            const numbers = [
-                "one",
-                "two",
-                "three",
-                "four",
-                "five",
-                "six",
-                "seven",
-                "eight",
-                "nine",
-                "ten",
-                "eleven",
-                "twelve",
-                "thirteen",
-                "fourteen",
-                "fifteen",
-                "sixteen",
-                "seventeen",
-                "eighteen",
-                "nineteen",
-                "twenty",
-                "twentyone",
-                "twentytwo",
-                "twentythree",
-                "twentyfour",
-                "twentyfive",
-                "twentysix",
-                "twentyseven",
-                "twentyeight",
-                "twentynine",
-                "thirty",
-                "thirtyone",
-                "thirtytwo",
-                "thirtythree",
-                "thirtyfour",
-                "thirtyfive",
-                "thirtysix",
-                "thirtyseven",
-                "thirtyeight",
-            ]
-
             const params = new URL(document.location).searchParams
-            let n = params.get("n") || numbers[numbers.length - 1]
+            let n = params.get("n") || numberName(MAX_NUMBER)
             const seed = params.get("seed")
             const makeRng = () =>
                 seed
@@ -170,7 +106,7 @@
             }
 
             function go_to(index) {
-                n = numbers[index]
+                n = numberName(index)
                 deInit && deInit()
                 rng = makeRng()
                 console.log(n)
@@ -180,15 +116,15 @@
             }
             
             function moveLeft() {
-                let index = numbers.indexOf(n)
-                if (index > 0) {
+                let index = parseNumberName(n)
+                if (index > 1) {
                     go_to(index - 1)
                 }
             }
 
             function moveRight() {
-                let index = numbers.indexOf(n)
-                if (index >= 0 && index + 1 < numbers.length) {
+                let index = parseNumberName(n)
+                if (index >= 0 && index < MAX_NUMBER) {
                     go_to(index + 1)
                 }
             }
