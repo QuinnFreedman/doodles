@@ -80,14 +80,14 @@ function parseDigit(digit) {
 function parseTwoDigits(str) {
     let tens
     let onesStr
-    if (str.startsWith("twenty"))  { tens = 20; onesStr = str.substring(6) }
-    if (str.startsWith("thirty"))  { tens = 30; onesStr = str.substring(6) }
-    if (str.startsWith("fourty"))  { tens = 40; onesStr = str.substring(6) }
-    if (str.startsWith("fifty"))   { tens = 50; onesStr = str.substring(5) }
-    if (str.startsWith("sixty"))   { tens = 60; onesStr = str.substring(5) }
-    if (str.startsWith("seventy")) { tens = 70; onesStr = str.substring(7) }
-    if (str.startsWith("eighty"))  { tens = 80; onesStr = str.substring(6) }
-    if (str.startsWith("ninety"))  { tens = 90; onesStr = str.substring(6) }
+    for (let i = 2; i < 10; i++) {
+        const tensStr = tensName(i);
+        if (str.startsWith(tensStr)) {
+            tens = 10 * i;
+            onesStr = str.substring(tensStr.length)
+            break;
+        }
+    }
 
     if (!tens) { return }
 
@@ -117,7 +117,7 @@ function tensName(digit) {
     switch(digit) {
         case 2: return "twenty"
         case 3: return "thirty"
-        case 4: return "fourty"
+        case 4: return "forty"
         case 5: return "fifty"
         case 6: return "sixty"
         case 7: return "seventy"
