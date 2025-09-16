@@ -123,7 +123,7 @@ function range(a, b, step) {
     }
     step = step || 1
     const values = []
-    for (i = min; i < max; i += step) {
+    for (let i = min; i < max; i += step) {
         values.push(i)
     }
 
@@ -140,7 +140,7 @@ function* xrange(a, b, step) {
         max = a
     }
     step = step || 1
-    for (i = min; i < max; i += step) {
+    for (let i = min; i < max; i += step) {
         yield i
     }
 }

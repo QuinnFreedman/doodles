@@ -18,50 +18,29 @@ function thirtythree(rng) {
     const OVERLAP_PADDING = 20
     ctx.lineWidth = 10
     
-    X = Array(GRID_WIDTH)
-    Y = Array(GRID_HEIGHT)
-
-    for (let i of xrange(GRID_WIDTH)) {
-        X[i] = rng.nextBool()
-    }
-
-    for (let i of xrange(GRID_HEIGHT)) {
-        Y[i] = rng.nextBool()
+    const DATA = Array(GRID_WIDTH)
+    for (let y of xrange(GRID_HEIGHT)) {
+        DATA[y] = Array(GRID_WIDTH)
+        for (let x of xrange(GRID_WIDTH)) {
+            DATA[y][x] = rng.nextInt() % 5; // Number >=3 determines how much overlap
+        }
     }
 
     for (let y = 0; y < GRID_HEIGHT; y++) {
         for (let x = 0; x < GRID_WIDTH; x++) {
-            const [a, b] = [X[x], Y[y]]
+            const cell = DATA[y][x];
             ctx.save()
             ctx.translate(MARGIN + TILE_WIDTH / 2 + x * TILE_WIDTH,
                           MARGIN + TILE_WIDTH / 2 + y * TILE_WIDTH)
 
-            switch(a << 1 | b) {
-                case 0b10: {
-                    ctx.moveTo(0, TILE_WIDTH / 2)
-                    ctx.lineTo(TILE_WIDTH, TILE_WIDTH / 2)
+            // ctx.strokeStyle="red";
+            // ctx.lineWidth = 1
+            // ctx.strokeRect(0, 0, TILE_WIDTH, TILE_WIDTH); 
+            // ctx.strokeStyle="black";
+            // ctx.lineWidth = 10
 
-                    ctx.moveTo(TILE_WIDTH / 2, 0)
-                    ctx.lineTo(TILE_WIDTH / 2, TILE_WIDTH / 2 - OVERLAP_PADDING)
-                    
-                    ctx.moveTo(TILE_WIDTH / 2, TILE_WIDTH / 2 + OVERLAP_PADDING)
-                    ctx.lineTo(TILE_WIDTH / 2, TILE_WIDTH)
-                    
-                    ctx.stroke()
-                } break;
-                case 0b01: {
-                    ctx.moveTo(TILE_WIDTH / 2, 0)
-                    ctx.lineTo(TILE_WIDTH / 2, TILE_WIDTH)
-
-                    ctx.moveTo(0, TILE_WIDTH / 2)
-                    ctx.lineTo(TILE_WIDTH / 2 - OVERLAP_PADDING, TILE_WIDTH / 2)
-                    
-                    ctx.moveTo(TILE_WIDTH / 2 + OVERLAP_PADDING, TILE_WIDTH / 2)
-                    ctx.lineTo(TILE_WIDTH, TILE_WIDTH / 2)
-                    
-                    ctx.stroke()
-                } break;
-                case 0b11: {
+            switch (cell) {
+                case 0: {
                     ctx.moveTo(TILE_WIDTH / 2, 0)
 
                     ctx.arc(0, 0, TILE_WIDTH / 2, 0, Math.PI / 2)
@@ -69,10 +48,10 @@ function thirtythree(rng) {
                     ctx.moveTo(TILE_WIDTH / 2, TILE_WIDTH)
                     ctx.arc(TILE_WIDTH, TILE_WIDTH, TILE_WIDTH / 2,
                             Math.PI, 3 / 2 * Math.PI)
-                    
+                
                     ctx.stroke()
                 } break;
-                case 0b00: {
+                case 1: {
                     ctx.moveTo(TILE_WIDTH, TILE_WIDTH / 2)
 
                     ctx.arc(TILE_WIDTH, 0, TILE_WIDTH / 2, Math.PI / 2, Math.PI)
@@ -82,8 +61,32 @@ function thirtythree(rng) {
                     
                     ctx.stroke()
                 } break;
-            }
+                default: {
+                    if ((x + y) % 2 == 1) {
+                        ctx.moveTo(TILE_WIDTH / 2, 0)
+                        ctx.lineTo(TILE_WIDTH / 2, TILE_WIDTH)
 
+                        ctx.moveTo(0, TILE_WIDTH / 2)
+                        ctx.lineTo(TILE_WIDTH / 2 - OVERLAP_PADDING, TILE_WIDTH / 2)
+                
+                        ctx.moveTo(TILE_WIDTH / 2 + OVERLAP_PADDING, TILE_WIDTH / 2)
+                        ctx.lineTo(TILE_WIDTH, TILE_WIDTH / 2)
+                
+                        ctx.stroke()
+                    } else {
+                        ctx.moveTo(0, TILE_WIDTH / 2)
+                        ctx.lineTo(TILE_WIDTH, TILE_WIDTH / 2)
+
+                        ctx.moveTo(TILE_WIDTH / 2, 0)
+                        ctx.lineTo(TILE_WIDTH / 2, TILE_WIDTH / 2 - OVERLAP_PADDING)
+                
+                        ctx.moveTo(TILE_WIDTH / 2, TILE_WIDTH / 2 + OVERLAP_PADDING)
+                        ctx.lineTo(TILE_WIDTH / 2, TILE_WIDTH)
+                
+                        ctx.stroke()
+                    }
+                } break;
+            }
 
             ctx.restore()
         }
